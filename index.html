@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Examen de conducir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#dde3e8;--tx:#16191d;--mut:#5d6672;--ground:#e7ece3;--block:#cdd7c6;--road:#555b64;--line:#f4f4ef;--isl:#8fb98f;--tick:#b9c2cb;--ok:#2f9e5b;--bad:#d1131f;
+ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d0f12;--tx:#eef0f2;--mut:#9aa3ad;--ground:#1d2227;--block:#272e35;--road:#434a54;--isl:#3d6a45;--tick:#2e353d}}
+:root[data-theme="dark"]{--bg:#0d0f12;--tx:#eef0f2;--mut:#9aa3ad;--ground:#1d2227;--block:#272e35;--road:#434a54;--isl:#3d6a45;--tick:#2e353d}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--tx);font-family:Barlow,-apple-system,"PingFang SC",Helvetica,Arial,sans-serif;max-width:480px;margin:0 auto;padding:12px 12px 20px}
+.bar{display:flex;justify-content:space-between;align-items:baseline;padding:2px 4px 8px}
+.brand{font:700 22px/1 "Barlow Condensed",Arial Narrow,sans-serif;letter-spacing:.2px}
+.brand small{display:block;font:400 12px Barlow,sans-serif;color:var(--mut);margin-top:3px;letter-spacing:0}
+.score{font:600 14px Barlow,sans-serif;color:var(--mut)}.score b{font:700 22px "Barlow Condensed",sans-serif;color:var(--tx)}
+.ticks{display:flex;gap:4px;padding:0 4px 10px}.ticks i{flex:1;height:5px;border-radius:3px;background:var(--tick)}
+.ticks i.ok{background:var(--ok)}.ticks i.bad{background:var(--bad)}.ticks i.cur{background:var(--tx)}
+.map{border-radius:20px;overflow:hidden;background:var(--ground);box-shadow:0 0 0 1px rgba(0,0,0,.08)}
+canvas#c{width:100%;aspect-ratio:1;display:block}
+.led{position:relative;margin-top:10px;padding:16px 16px 14px;border-radius:14px;background:#0c0d0f;border:2px solid #2b2d33;color:#ffb000;
+ background-image:radial-gradient(rgba(255,176,0,.10) 1px,transparent 1.4px);background-size:5px 5px;min-height:128px}
+.tag{display:inline-block;background:#0f4c9a;color:#fff;font:600 12px Barlow,sans-serif;padding:3px 9px;border-radius:5px;margin-bottom:8px;border:1px solid #fff}
+.es{font:600 26px/1.15 "Barlow Condensed","Arial Narrow",sans-serif;text-transform:uppercase;letter-spacing:.6px;text-shadow:0 0 8px rgba(255,176,0,.55)}
+.zh{font:400 14px/1.45 Barlow,"PingFang SC",sans-serif;color:#b9ad90;margin-top:8px}
+.msg{min-height:20px;margin-top:6px;font:600 15px Barlow,"PingFang SC",sans-serif}
+.err{margin-top:8px;color:#e6dfcc;font-size:14px;line-height:1.4}.err span{color:#a99f86}
+.dash{margin-top:10px;padding:16px 14px 14px;border-radius:22px;background:#17191d;border:1px solid #272a30}
+#cr{display:flex;align-items:center;justify-content:center;gap:22px;min-height:172px}
+#c1{display:none}#c3{display:none;grid-template-columns:1fr 1fr;gap:8px;width:172px}
+#wheel{width:172px;height:172px;touch-action:none;display:block}
+button{font:600 17px Barlow,sans-serif;border:0;color:#fff;cursor:pointer}
+#c3 button{background:#262a31;border-radius:12px;padding:20px 0;font:700 24px "Barlow Condensed",sans-serif}
+#c3 button:active{background:#ffb000;color:#111}
+#stopb{flex:none;width:96px;height:96px;border-radius:50%;background:#d1131f;font:700 20px "Barlow Condensed",sans-serif;letter-spacing:1px;box-shadow:0 0 0 5px #17191d,0 0 0 8px #5a1015,0 6px 14px rgba(0,0,0,.45)}
+#stopb:active{transform:scale(.95)}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;justify-content:center}
+.pills button{background:#23262c;color:#d7dbe0;font:600 13px Barlow,"PingFang SC",sans-serif;padding:8px 12px;border-radius:999px}
+.pills button.off{color:#7d848d;text-decoration:line-through}
+#rev{display:none;width:100%;margin-top:12px;padding:12px;border-radius:12px;background:#0f4c9a;font-size:16px}
+button:focus-visible{outline:3px solid #ffb000;outline-offset:2px}
+</style></head><body>
+<header class="bar"><div class="brand">Examen de conducir<small>Entrenamiento de instrucciones</small></div><div class="score"><b id="f">0</b> aciertos</div></header>
+<div class="ticks" id="ticks"></div>
+<div class="map"><canvas id="c" width="960" height="960"></canvas></div>
+<section class="led"><span class="tag" id="h" style="display:none">Cruce</span>
+<div class="es" id="es">Escucha al examinador</div><div class="zh" id="zh">听考官的西班牙语指令，转动方向盘作答：向左转 / 向右转，点一下方向盘 = 直行；红色 STOP = 靠右停车。地图上有两个环岛。点红色按钮开始。</div><div class="msg" id="m"></div></section>
+<section class="dash">
+<div id="cr"><div id="c1"><canvas id="wheel" width="360" height="360"></canvas></div>
+<div id="c3"><button data-a="e1">1ª</button><button data-a="e2">2ª</button><button data-a="e3">3ª</button><button data-a="e4">4ª</button></div>
+<button data-a="stop" id="stopb" aria-label="Empezar / Parar" style="font-size:15px;letter-spacing:0">EMPEZAR</button></div>
+<div class="pills"><button id="rep">Repetir</button><button id="spd">Normal</button><button id="txt">Texto</button><button id="tr">中文</button><button id="voz">Voz</button></div>
+<button id="rev">Repasar errores</button></section>
+<script>
+const N=5,TOTAL=12,dx=[0,1,0,-1],dy=[-1,0,1,0],RB=[[1,1],[3,3]];
+const ORD=["primera","segunda","tercera","cuarta"],ZH=["第1","第2","第3","第4"];
+const T={left:[["En el próximo cruce, gire a la izquierda.","在下一个路口左转。"],["Tome la primera a la izquierda, por favor.","请走第一条左边的路。"],["Ahí, a la izquierda.","前面，左转。"]],
+right:[["En el próximo cruce, gire a la derecha.","在下一个路口右转。"],["Tome la primera a la derecha, por favor.","请走第一条右边的路。"],["Ahí, a la derecha.","前面，右转。"]],
+straight:[["Siga recto en el próximo cruce.","在下个路口直行。"],["Continúe todo recto, por favor.","请一直往前开。"],["No gire, siga de frente.","不要转弯，继续直行。"]],
+stop:[["Pare el vehículo en el lado derecho, por favor.","请靠右边停车。"],["Detenga el coche a la derecha cuando sea seguro.","安全时请靠右停车。"]]};
+const rbT=n=>[["En la rotonda, tome la "+ORD[n-1]+" salida.","在环岛，从"+ZH[n-1]+"个出口驶出。"],["Salga por la "+ORD[n-1]+".","走"+ZH[n-1]+"个出口。"],["Tome la "+ORD[n-1]+" salida, por favor.","请从"+ZH[n-1]+"个出口出去。"]];
+const L={left:"左转",right:"右转",straight:"直行",stop:"靠右停车",e1:"第1出口",e2:"第2出口",e3:"第3出口",e4:"第4出口"};
+const SP=[["Lento",.7],["Normal",.92],["Rápido",1.12]];
+const cv=document.getElementById("c"),g=cv.getContext("2d"),$=i=>document.getElementById(i),css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+let x=2,y=0,h=2,q=0,right_=0,errs=[],res=[],cur=null,zhOn=true,esOn=true,si=1,busy=false,reps=2,revealed=false,queue=null;
+const CS=96,P=(a,b)=>[(a+.5)*CS,(b+.5)*CS],isRB=()=>RB.some(r=>r[0]==x&&r[1]==y);
+function dir(k){return k=="left"||k=="e3"?(h+3)%4:k=="right"||k=="e1"?(h+1)%4:k=="e4"?(h+2)%4:h}
+function valid(k){if(k=="stop")return true;const d=dir(k),nx=x+dx[d],ny=y+dy[d];return nx>=0&&ny>=0&&nx<N&&ny<N}
+function roads(w,col,dash){g.strokeStyle=col;g.lineWidth=w;g.setLineDash(dash||[]);for(let i=0;i<N;i++){let[a,b]=P(i,0),[c,d]=P(i,N-1);g.beginPath();g.moveTo(a,b);g.lineTo(c,d);g.stroke();[a,b]=P(0,i);[c,d]=P(N-1,i);g.beginPath();g.moveTo(a,b);g.lineTo(c,d);g.stroke()}g.setLineDash([])}
+function draw(px,py,a,flash){
+ g.setTransform(2,0,0,2,0,0);g.clearRect(0,0,480,480);g.fillStyle=css("--ground");g.fillRect(0,0,480,480);
+ g.fillStyle=css("--block");for(let i=0;i<N-1;i++)for(let j=0;j<N-1;j++){const[a1,b1]=P(i,j);g.beginPath();g.roundRect(a1+22,b1+22,CS-44,CS-44,10);g.fill()}
+ g.lineCap="butt";roads(34,css("--road"));
+ RB.forEach(r=>{const[cx,cy]=P(r[0],r[1]);g.strokeStyle=css("--road");g.lineWidth=30;g.beginPath();g.arc(cx,cy,30,0,7);g.stroke();g.fillStyle=css("--isl");g.beginPath();g.arc(cx,cy,15,0,7);g.fill();
+  g.fillStyle="rgba(255,255,255,.85)";for(let k=0;k<4;k++){const t=k*Math.PI/2+Math.PI/4;g.save();g.translate(cx+30*Math.cos(t),cy+30*Math.sin(t));g.rotate(t-Math.PI/2);g.beginPath();g.moveTo(0,-5);g.lineTo(4,4);g.lineTo(-4,4);g.fill();g.restore()}});
+ g.strokeStyle=css("--line");g.globalAlpha=.8;roads(1.6,css("--line"),[7,9]);g.globalAlpha=1;
+ RB.forEach(r=>{const[cx,cy]=P(r[0],r[1]);g.fillStyle=css("--road");g.beginPath();g.arc(cx,cy,14,0,7);g.fill();g.fillStyle=css("--isl");g.beginPath();g.arc(cx,cy,13,0,7);g.fill()});
+ g.save();g.translate(px,py);g.rotate(a);g.shadowColor="rgba(0,0,0,.35)";g.shadowBlur=8;g.shadowOffsetY=2;
+ g.fillStyle=flash||"#d1131f";g.beginPath();g.roundRect(-10,-18,20,36,6);g.fill();g.shadowColor="transparent";
+ g.fillStyle="#1c2430";g.beginPath();g.roundRect(-7,-9,14,7,2);g.fill();g.beginPath();g.roundRect(-7,6,14,5,2);g.fill();
+ g.fillStyle="#ffe08a";g.fillRect(-8,-18,4,3);g.fillRect(4,-18,4,3);g.restore()}
+const ang=hh=>hh*Math.PI/2;
+const isMale=v=>/jorge|diego|pablo|juan|carlos|[aá]lvaro|enrique|antonio|pedro|miguel|tom[aá]s|ra[uú]l|alonso|male|masculin/i.test(v.name)&&!/female/i.test(v.name);
+let voices=[],vi=0;
+function loadV(){try{const sc=v=>{const n=v.name;let s=0;if(/es[-_]ES/i.test(v.lang))s+=4;if(/natural|neural|online/i.test(n))s+=8;if(/premium|enhanced|mejorada/i.test(n))s+=6;if(/google/i.test(n))s+=3;if(isMale(v))s+=12;if(/m[oó]nica|helena|elvira|marisol|luc[ií]a|sabina|alba|paulina|laura|paloma|carmen|marta|female/i.test(n))s-=3;if(/compact/i.test(n))s-=5;return s};
+ voices=speechSynthesis.getVoices().filter(v=>/^es/i.test(v.lang)).sort((a,b)=>sc(b)-sc(a));vi=0;updTxt()}catch(e){}}
+try{speechSynthesis.onvoiceschanged=loadV;loadV()}catch(e){}
+const AUDIO={};let au=null;
+function say(t){try{speechSynthesis.cancel()}catch(e){}if(au){au.pause();au=null}
+ if(AUDIO[t]){au=new Audio(AUDIO[t]);au.preservesPitch=true;au.playbackRate=[.8,1,1.2][si];au.play().catch(()=>tts(t));return}
+ tts(t)}
+function tts(t){try{const u=new SpeechSynthesisUtterance(t),v=voices[vi];if(v){u.voice=v;u.lang=v.lang}else u.lang="es-ES";u.rate=SP[si][1];u.pitch=(v&&isMale(v))?.9:.72;speechSynthesis.speak(u)}catch(e){}}
+if(Object.keys(AUDIO).length)document.getElementById("voz").style.display="none";
+function place(k){const e=k[0]=="e";for(let i=0;i<500;i++){if(e){const r=rnd(RB);x=r[0];y=r[1]}else{x=Math.floor(Math.random()*N);y=Math.floor(Math.random()*N)}h=Math.floor(Math.random()*4);if(e==isRB()&&valid(k))return}}
+function pickQ(){let ks;if(isRB())ks=["e1","e2","e3","e4"].filter(valid);else{ks=["left","right","straight"].filter(valid);if(Math.random()<.15)ks=["stop"]}
+ const k=rnd(ks);return{k,v:rnd(k[0]=="e"?rbT(+k[1]):T[k])}}
+function ticks(total){$("ticks").innerHTML=Array.from({length:total},(_,i)=>"<i class='"+(i<res.length?(res[i]?"ok":"bad"):i==res.length&&cur?"cur":"")+"'></i>").join("")}
+function updTxt(){$("rep").textContent="Repetir · "+reps;$("spd").textContent=SP[si][0];$("txt").textContent="Texto";$("txt").className=esOn?"":"off";$("tr").className=zhOn?"":"off";
+ const v=voices[vi];$("voz").textContent="Voz: "+(v?v.name.replace(/^(Microsoft|Google)\s+/i,"").split(/[\s-]/)[0]:"auto")}
+function show(){const s=esOn||revealed;$("es").textContent=s?cur.v[0]:"Escucha…";$("zh").textContent=zhOn&&s?cur.v[1]+(cur.k[0]=="e"?"（出口从右手边起数：1=右，2=直，3=左，4=掉头）":""):""}
+function start(list){q=0;right_=0;errs=[];res=[];queue=list||null;$("rev").style.display="none";$("f").textContent="0";
+ $("stopb").textContent="STOP";$("stopb").style.fontSize="20px";$("stopb").style.letterSpacing="1px";
+ x=0;y=2;h=1;draw(...P(x,y),ang(h));next()}
+function next(){const total=queue?queue.length:TOTAL;if(q>=total)return end();
+ cur=queue?{k:queue[q].k,v:queue[q].v}:pickQ();if(queue){place(cur.k);draw(...P(x,y),ang(h))}
+ q++;reps=2;revealed=false;busy=false;ticks(total);
+ $("h").style.display="inline-block";$("h").textContent=isRB()?"Rotonda":"Cruce";
+ $("c1").style.display=isRB()?"none":"block";$("c3").style.display=isRB()?"grid":"none";
+ $("m").textContent="";wa=0;drawW();show();updTxt();say(cur.v[0])}
+function answer(a){if(busy||!cur)return;busy=true;const ok=a==cur.k;revealed=true;show();res.push(ok);ticks(queue?queue.length:TOTAL);
+ if(ok){right_++;$("f").textContent=right_;$("m").style.color="#5ee08a";$("m").textContent="Correcto"}
+ else{errs.push({k:cur.k,v:cur.v});$("m").style.color="#ff7a7a";$("m").textContent="Falta · 正确答案："+L[cur.k]}
+ const nh=dir(cur.k);
+ if(cur.k=="stop"){draw(...P(x,y),ang(h),ok?null:"#7a0b12");return setTimeout(next,1500)}
+ const nx=x+dx[nh],ny=y+dy[nh],[a0,b0]=P(x,y),[a1,b1]=P(nx,ny);let t=0;
+ (function f(){t+=.04;const e=Math.min(t,1);draw(a0+(a1-a0)*e,b0+(b1-b0)*e,ang(nh),ok?null:"#7a0b12");
+  if(e<1)requestAnimationFrame(f);else{x=nx;y=ny;h=nh;setTimeout(next,ok?800:1500)}})()}
+function end(){$("c1").style.display="none";$("c3").style.display="none";$("stopb").textContent="EMPEZAR";$("stopb").style.fontSize="15px";$("stopb").style.letterSpacing="0";
+ const total=queue?queue.length:TOTAL;cur=null;ticks(total);$("h").style.display="none";
+ $("es").textContent="Resultado "+right_+" / "+total;
+ $("zh").innerHTML=(errs.length?"错题（"+errs.length+"）":"全部答对")+errs.map(e=>"<div class='err'>"+e.v[0]+"<br><span>"+e.v[1]+" → "+L[e.k]+"</span></div>").join("");
+ $("m").textContent="";if(errs.length)$("rev").style.display="block";window._errs=errs.slice();say(right_==total?"Enhorabuena.":"Vamos a repasar.")}
+document.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>answer(b.dataset.a));
+$("stopb").onclick=()=>cur?answer("stop"):start();$("rev").onclick=()=>start(window._errs);
+$("rep").onclick=()=>{if(cur&&reps>0){reps--;updTxt();say(cur.v[0])}};
+$("spd").onclick=()=>{si=(si+1)%3;updTxt()};
+$("txt").onclick=()=>{esOn=!esOn;updTxt();if(cur)show()};
+$("tr").onclick=()=>{zhOn=!zhOn;updTxt();if(cur)show()};
+$("voz").onclick=()=>{if(voices.length){vi=(vi+1)%voices.length;updTxt();say(cur?cur.v[0]:"Buenos días, empezamos el examen.")}};
+const wc=$("wheel"),wg=wc.getContext("2d");let wa=0,drag=false,moved=0,last=0;
+function drawW(){const s=360,r=180,R=r-36;wg.clearRect(0,0,s,s);wg.strokeStyle="rgba(255,255,255,.28)";wg.lineWidth=6;wg.lineCap="round";wg.lineJoin="round";
+ wg.beginPath();wg.moveTo(20,r-18);wg.lineTo(6,r);wg.lineTo(20,r+18);wg.moveTo(s-20,r-18);wg.lineTo(s-6,r);wg.lineTo(s-20,r+18);wg.stroke();
+ wg.save();wg.translate(r,r);wg.rotate(wa*Math.PI/180);
+ wg.strokeStyle="#3a3e47";wg.lineWidth=30;wg.beginPath();wg.moveTo(-R,0);wg.lineTo(R,0);wg.moveTo(0,0);wg.lineTo(0,R);wg.stroke();
+ wg.strokeStyle="#262930";wg.lineWidth=38;wg.beginPath();wg.arc(0,0,R,0,7);wg.stroke();
+ wg.strokeStyle="#515662";wg.lineWidth=3;wg.beginPath();wg.arc(0,0,R-12,0,7);wg.stroke();
+ wg.fillStyle="#ffb000";wg.fillRect(-6,-R-19,12,38);
+ wg.fillStyle="#30343c";wg.beginPath();wg.arc(0,0,40,0,7);wg.fill();wg.strokeStyle="#515662";wg.lineWidth=3;wg.stroke();
+ wg.fillStyle="#ffb000";wg.beginPath();wg.arc(0,-14,5,0,7);wg.fill();wg.restore()}
+function wAng(e){const b=wc.getBoundingClientRect();return Math.atan2(e.clientY-(b.top+b.height/2),e.clientX-(b.left+b.width/2))*180/Math.PI}
+wc.addEventListener("pointerdown",e=>{if(busy||!cur)return;drag=true;moved=0;last=wAng(e);wc.setPointerCapture(e.pointerId)});
+wc.addEventListener("pointermove",e=>{if(!drag)return;const a=wAng(e);let d=a-last;if(d>180)d-=360;if(d<-180)d+=360;last=a;moved+=Math.abs(d);wa=Math.max(-120,Math.min(120,wa+d));drawW()});
+function wUp(){if(!drag)return;drag=false;let k=null;if(moved<12)k="straight";else if(wa<=-40)k="left";else if(wa>=40)k="right";if(k)answer(k);(function b(){wa*=.8;if(Math.abs(wa)<1)wa=0;drawW();if(wa)requestAnimationFrame(b)})()}
+wc.addEventListener("pointerup",wUp);wc.addEventListener("pointercancel",wUp);
+ticks(TOTAL);updTxt();drawW();draw(...P(2,0),0);
+</script></body></html>
