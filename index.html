@@ -55,14 +55,17 @@ button:focus-visible{outline:3px solid #ffb000;outline-offset:2px}
 <script>
 const N=5,TOTAL=12,dx=[0,1,0,-1],dy=[-1,0,1,0],RB=[[1,1],[3,3]];
 const ORD=["primera","segunda","tercera","cuarta"],ZH=["第1","第2","第3","第4"];
-const T={"left": [["Ahora vamos a girar a la izquierda.", "现在我们向左转。"], ["Cuando puedas a la izquierda.", "你可以的时候，往左。"], ["Hacia la izquierda.", "向左。"], ["Gira a la izquierda.", "左转。"], ["Giraremos a la izquierda en la siguiente.", "下一个路口我们左转。"], ["En la siguiente intersección nos vamos a ir hacia la izquierda.", "在下一个路口，我们往左走。"]], "right": [["Cuando puedas a la derecha.", "你可以的时候，往右。"], ["Vamos a la derecha cuando puedas.", "可以的时候我们往右走。"], ["La siguiente que puedas vamos a la derecha.", "下一个能转的路口，我们往右。"], ["Giro a la derecha.", "右转。"], ["La siguiente intersección a la derecha.", "下一个路口右转。"], ["A la derecha cuando sea posible.", "可能的时候往右。"], ["Vamos a girar a la derecha, la siguiente intersección.", "我们在下一个路口右转。"], ["Recuerda, a la derecha.", "记住，往右。"], ["A la derecha.", "往右。"]], "straight": [["Vamos a seguir en línea recta.", "我们继续直行。"], ["Si yo no te digo nada, vas a continuar siempre de frente.", "如果我没说话，你就一直往前开。"], ["De frente.", "直行。"]], "stop": [["Cuando puedas vamos a buscar un sitio para estacionar utilizando la marcha atrás.", "可以的时候，我们找个地方倒车入位停车。"], ["En este hueco, utilizando la marcha atrás.", "就在这个空位，倒车入位。"], ["De esta vía buscará un lugar para estacionar utilizando la marcha atrás.", "在这条路上找个位置，倒车入位停车。"]]};
-const RBT={"1": [["En la rotonda que se aproxima vamos a hacer primera salida.", "在前面的环岛，我们走第一个出口。"], ["Primera salida.", "第一个出口。"], ["En la rotonda la primera salida.", "在环岛，第一个出口。"], ["Haremos la primera salida en la rotonda que se aproxima.", "在前面的环岛我们走第一个出口。"], ["En la siguiente rotonda haremos la primera salida posible.", "在下一个环岛，走第一个可行的出口。"]], "2": [["Vamos a hacer la segunda salida.", "我们走第二个出口。"], ["Vamos a ir de frente en esta rotonda.", "在这个环岛我们直行（第二个出口）。"], ["De frente.", "直行（第二个出口）。"]], "3": [["Cogemos la tercera salida.", "我们走第三个出口。"], ["Tercera salida.", "第三个出口。"], ["En la siguiente intersección, tercera salida.", "在下一个路口，第三个出口。"], ["Ahora cogemos la tercera salida nuevamente.", "现在我们再次走第三个出口。"]], "4": [["En la rotonda, tome la cuarta salida.", "在环岛，从第4个出口驶出。"], ["Cuarta salida.", "第4个出口。"]]};
+const T={"left": [["Ahora vamos a girar a la izquierda.", "现在我们向左转。", "Now we turn left."], ["Cuando puedas a la izquierda.", "你可以的时候，往左。", "Turn left when you can."], ["Hacia la izquierda.", "向左。", "Turn left."], ["Gira a la izquierda.", "左转。", "Turn left."], ["Giraremos a la izquierda en la siguiente.", "下一个路口我们左转。", "We'll turn left at the next one."], ["En la siguiente intersección nos vamos a ir hacia la izquierda.", "在下一个路口，我们往左走。", "Turn left at the next intersection."]], "right": [["Cuando puedas a la derecha.", "你可以的时候，往右。", "Turn right when you can."], ["Vamos a la derecha cuando puedas.", "可以的时候我们往右走。", "Turn right when you can."], ["La siguiente que puedas vamos a la derecha.", "下一个能转的路口，我们往右。", "Turn right at the next one you can."], ["Giro a la derecha.", "右转。", "Turn right."], ["La siguiente intersección a la derecha.", "下一个路口右转。", "Turn right at the next intersection."], ["A la derecha cuando sea posible.", "可能的时候往右。", "Turn right when possible."], ["Vamos a girar a la derecha, la siguiente intersección.", "我们在下一个路口右转。", "We're going to turn right at the next intersection."], ["Recuerda, a la derecha.", "记住，往右。", "Remember, turn right."], ["A la derecha.", "往右。", "Turn right."]], "straight": [["Vamos a seguir en línea recta.", "我们继续直行。", "Keep going straight."], ["Si yo no te digo nada, vas a continuar siempre de frente.", "如果我没说话，你就一直往前开。", "If I don't say anything, keep going straight."], ["De frente.", "直行。", "Straight ahead."]], "stop": [["Cuando puedas vamos a buscar un sitio para estacionar utilizando la marcha atrás.", "可以的时候，我们找个地方倒车入位停车。", "When you can, find a spot to park, reversing in."], ["En este hueco, utilizando la marcha atrás.", "就在这个空位，倒车入位。", "In this space, reverse in."], ["De esta vía buscará un lugar para estacionar utilizando la marcha atrás.", "在这条路上找个位置，倒车入位停车。", "On this street, find a spot to park, reversing in."]]};
+const RBT={"1": [["En la rotonda que se aproxima vamos a hacer primera salida.", "在前面的环岛，我们走第一个出口。", "At the roundabout ahead, take the first exit."], ["Primera salida.", "第一个出口。", "First exit."], ["En la rotonda la primera salida.", "在环岛，第一个出口。", "At the roundabout, take the first exit."], ["Haremos la primera salida en la rotonda que se aproxima.", "在前面的环岛我们走第一个出口。", "Take the first exit at the roundabout ahead."], ["En la siguiente rotonda haremos la primera salida posible.", "在下一个环岛，走第一个可行的出口。", "At the next roundabout, take the first possible exit."]], "2": [["Vamos a hacer la segunda salida.", "我们走第二个出口。", "Take the second exit."], ["Vamos a ir de frente en esta rotonda.", "在这个环岛我们直行（第二个出口）。", "Go straight ahead at this roundabout (second exit)."], ["De frente.", "直行（第二个出口）。", "Straight ahead (second exit)."]], "3": [["Cogemos la tercera salida.", "我们走第三个出口。", "Take the third exit."], ["Tercera salida.", "第三个出口。", "Third exit."], ["En la siguiente intersección, tercera salida.", "在下一个路口，第三个出口。", "At the next intersection, take the third exit."], ["Ahora cogemos la tercera salida nuevamente.", "现在我们再次走第三个出口。", "Now take the third exit again."]], "4": [["Vamos a hacer un cambio de sentido.", "我们要掉头（绕环岛一圈，从入口出去）。", "We're going to make a U-turn (go all the way round and leave by the entrance)."], ["En la rotonda, tome la cuarta salida.", "在环岛，从第4个出口驶出。", "At the roundabout, take the fourth exit."], ["Cuarta salida.", "第4个出口。", "Fourth exit."]]};
 const rbT=n=>RBT[n];
-const L={left:"左转",right:"右转",straight:"直行",stop:"停车（倒车入库）",e1:"第1出口",e2:"第2出口",e3:"第3出口",e4:"第4出口"};
+const L={left:"左转",right:"右转",straight:"直行",stop:"停车（倒车入库）",e1:"第1出口",e2:"第2出口",e3:"第3出口",e4:"第4出口（掉头）"};
+const LE={left:"turn left",right:"turn right",straight:"straight ahead",stop:"stop / reverse park",e1:"1st exit",e2:"2nd exit",e3:"3rd exit",e4:"4th exit (U-turn)"};
+const INTRO=["听考官的西班牙语指令，转动方向盘作答：向左转 / 向右转，点一下方向盘 = 直行；红色 STOP = 停车 / 倒车入库。地图上有两个环岛。点红色按钮开始。","Listen to the examiner in Spanish and answer with the wheel: turn left / right, tap the wheel = straight ahead, red STOP = stop / reverse park. Two roundabouts on the map. Tap the red button to start.",""];
+function setIntro(){$("zh").textContent=INTRO[hm]}
 const SP=[["Lento",.7],["Normal",.92],["Rápido",1.12]];
 const cv=document.getElementById("c"),g=cv.getContext("2d"),$=i=>document.getElementById(i),css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const rnd=a=>a[Math.floor(Math.random()*a.length)];
-let x=2,y=0,h=2,q=0,right_=0,errs=[],res=[],cur=null,zhOn=true,esOn=true,si=1,busy=false,reps=2,revealed=false,queue=null;
+let x=2,y=0,h=2,q=0,right_=0,errs=[],res=[],cur=null,hm=0,esOn=true,si=1,busy=false,reps=2,revealed=false,queue=null;
 const CS=96,P=(a,b)=>[(a+.5)*CS,(b+.5)*CS],isRB=()=>RB.some(r=>r[0]==x&&r[1]==y);
 function dir(k){return k=="left"||k=="e3"?(h+3)%4:k=="right"||k=="e1"?(h+1)%4:k=="e4"?(h+2)%4:h}
 function valid(k){if(k=="stop")return true;const d=dir(k),nx=x+dx[d],ny=y+dy[d];return nx>=0&&ny>=0&&nx<N&&ny<N}
@@ -95,9 +98,9 @@ function place(k){const e=k[0]=="e";for(let i=0;i<500;i++){if(e){const r=rnd(RB)
 function pickQ(){let ks;if(isRB())ks=["e1","e2","e3","e4"].filter(valid);else{ks=["left","right","straight"].filter(valid);if(Math.random()<.15)ks=["stop"]}
  const k=rnd(ks);return{k,v:rnd(k[0]=="e"?rbT(+k[1]):T[k])}}
 function ticks(total){$("ticks").innerHTML=Array.from({length:total},(_,i)=>"<i class='"+(i<res.length?(res[i]?"ok":"bad"):i==res.length&&cur?"cur":"")+"'></i>").join("")}
-function updTxt(){$("rep").textContent="Repetir · "+reps;$("spd").textContent=SP[si][0];$("txt").textContent="Texto";$("txt").className=esOn?"":"off";$("tr").className=zhOn?"":"off";
+function updTxt(){$("rep").textContent="Repetir · "+reps;$("spd").textContent=SP[si][0];$("txt").textContent="Texto";$("txt").className=esOn?"":"off";$("tr").textContent=["中文","English","Sin ayuda"][hm];$("tr").className="";
  const v=voices[vi];$("voz").textContent="Voz: "+(v?v.name.replace(/^(Microsoft|Google)\s+/i,"").split(/[\s-]/)[0]:"auto")}
-function show(){const s=esOn||revealed;$("es").textContent=s?cur.v[0]:"Escucha…";$("zh").textContent=zhOn&&s?cur.v[1]+(cur.k[0]=="e"?"（出口从右手边起数：1=右，2=直，3=左，4=掉头）":""):""}
+function show(){const s=esOn||revealed;$("es").textContent=s?cur.v[0]:"Escucha…";{const tr=hm==0?cur.v[1]:hm==1?cur.v[2]:"",ex=cur.k[0]=="e"?(hm==0?"（出口从右手边起数：1=右，2=直，3=左，4=掉头，绕一圈从入口出去）":hm==1?" (Count exits from your right: 1=right, 2=straight, 3=left, 4=U-turn, all the way round)":""):"";$("zh").textContent=s&&hm<2?tr+ex:""}}
 function start(list){q=0;right_=0;errs=[];res=[];queue=list||null;$("rev").style.display="none";$("f").textContent="0";
  $("stopb").textContent="STOP";$("stopb").style.fontSize="20px";$("stopb").style.letterSpacing="1px";
  x=0;y=2;h=1;draw(...P(x,y),ang(h));next()}
@@ -109,7 +112,7 @@ function next(){const total=queue?queue.length:TOTAL;if(q>=total)return end();
  $("m").textContent="";wa=0;drawW();show();updTxt();say(cur.v[0])}
 function answer(a){if(busy||!cur)return;busy=true;const ok=a==cur.k;revealed=true;show();res.push(ok);ticks(queue?queue.length:TOTAL);
  if(ok){right_++;$("f").textContent=right_;$("m").style.color="#5ee08a";$("m").textContent="Correcto"}
- else{errs.push({k:cur.k,v:cur.v});$("m").style.color="#ff7a7a";$("m").textContent="Falta · 正确答案："+L[cur.k]}
+ else{errs.push({k:cur.k,v:cur.v});$("m").style.color="#ff7a7a";$("m").textContent="Falta · "+(hm==1?"Answer: "+LE[cur.k]:"正确答案："+L[cur.k])}
  const nh=dir(cur.k);
  if(cur.k=="stop"){draw(...P(x,y),ang(h),ok?null:"#7a0b12");return setTimeout(next,1500)}
  const nx=x+dx[nh],ny=y+dy[nh],[a0,b0]=P(x,y),[a1,b1]=P(nx,ny);let t=0;
@@ -118,14 +121,14 @@ function answer(a){if(busy||!cur)return;busy=true;const ok=a==cur.k;revealed=tru
 function end(){$("c1").style.display="none";$("c3").style.display="none";$("stopb").textContent="EMPEZAR";$("stopb").style.fontSize="15px";$("stopb").style.letterSpacing="0";
  const total=queue?queue.length:TOTAL;cur=null;ticks(total);$("h").style.display="none";
  $("es").textContent="Resultado "+right_+" / "+total;
- $("zh").innerHTML=(errs.length?"错题（"+errs.length+"）":"全部答对")+errs.map(e=>"<div class='err'>"+e.v[0]+"<br><span>"+e.v[1]+" → "+L[e.k]+"</span></div>").join("");
+ $("zh").innerHTML=(errs.length?(hm==1?"Mistakes ("+errs.length+")":"错题（"+errs.length+"）"):(hm==1?"All correct":"全部答对"))+errs.map(e=>"<div class='err'>"+e.v[0]+"<br><span>"+(hm==1?e.v[2]+" → "+LE[e.k]:e.v[1]+" → "+L[e.k])+"</span></div>").join("");
  $("m").textContent="";if(errs.length)$("rev").style.display="block";window._errs=errs.slice();say(right_==total?"Enhorabuena.":"Vamos a repasar.")}
 document.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>answer(b.dataset.a));
 $("stopb").onclick=()=>cur?answer("stop"):start();$("rev").onclick=()=>start(window._errs);
 $("rep").onclick=()=>{if(cur&&reps>0){reps--;updTxt();say(cur.v[0])}};
 $("spd").onclick=()=>{si=(si+1)%3;updTxt()};
 $("txt").onclick=()=>{esOn=!esOn;updTxt();if(cur)show()};
-$("tr").onclick=()=>{zhOn=!zhOn;updTxt();if(cur)show()};
+$("tr").onclick=()=>{hm=(hm+1)%3;updTxt();if(cur)show();else if(!res.length)setIntro()};
 $("voz").onclick=()=>{if(voices.length){vi=(vi+1)%voices.length;updTxt();say(cur?cur.v[0]:"Buenos días, empezamos el examen.")}};
 const wc=$("wheel"),wg=wc.getContext("2d");let wa=0,drag=false,moved=0,last=0;
 function drawW(){const s=360,r=180,R=r-36;wg.clearRect(0,0,s,s);wg.strokeStyle="rgba(255,255,255,.28)";wg.lineWidth=6;wg.lineCap="round";wg.lineJoin="round";
