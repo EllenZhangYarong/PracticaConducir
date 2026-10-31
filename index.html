@@ -45,7 +45,7 @@ button:focus-visible{outline:3px solid #ffb000;outline-offset:2px}
 <div class="ticks" id="ticks"></div>
 <div class="map"><canvas id="c" width="960" height="960"></canvas></div>
 <section class="led"><span class="tag" id="h" style="display:none">Cruce</span>
-<div class="es" id="es">Escucha al examinador</div><div class="zh" id="zh">听考官的西班牙语指令，转动方向盘作答：向左转 / 向右转，点一下方向盘 = 直行；红色 STOP = 靠右停车。地图上有两个环岛。点红色按钮开始。</div><div class="msg" id="m"></div></section>
+<div class="es" id="es">Escucha al examinador</div><div class="zh" id="zh">听考官的西班牙语指令，转动方向盘作答：向左转 / 向右转，点一下方向盘 = 直行；红色 STOP = 停车 / 倒车入库。地图上有两个环岛。点红色按钮开始。</div><div class="msg" id="m"></div></section>
 <section class="dash">
 <div id="cr"><div id="c1"><canvas id="wheel" width="360" height="360"></canvas></div>
 <div id="c3"><button data-a="e1">1ª</button><button data-a="e2">2ª</button><button data-a="e3">3ª</button><button data-a="e4">4ª</button></div>
@@ -55,12 +55,10 @@ button:focus-visible{outline:3px solid #ffb000;outline-offset:2px}
 <script>
 const N=5,TOTAL=12,dx=[0,1,0,-1],dy=[-1,0,1,0],RB=[[1,1],[3,3]];
 const ORD=["primera","segunda","tercera","cuarta"],ZH=["第1","第2","第3","第4"];
-const T={left:[["En el próximo cruce, gire a la izquierda.","在下一个路口左转。"],["Tome la primera a la izquierda, por favor.","请走第一条左边的路。"],["Ahí, a la izquierda.","前面，左转。"]],
-right:[["En el próximo cruce, gire a la derecha.","在下一个路口右转。"],["Tome la primera a la derecha, por favor.","请走第一条右边的路。"],["Ahí, a la derecha.","前面，右转。"]],
-straight:[["Siga recto en el próximo cruce.","在下个路口直行。"],["Continúe todo recto, por favor.","请一直往前开。"],["No gire, siga de frente.","不要转弯，继续直行。"]],
-stop:[["Pare el vehículo en el lado derecho, por favor.","请靠右边停车。"],["Detenga el coche a la derecha cuando sea seguro.","安全时请靠右停车。"]]};
-const rbT=n=>[["En la rotonda, tome la "+ORD[n-1]+" salida.","在环岛，从"+ZH[n-1]+"个出口驶出。"],["Salga por la "+ORD[n-1]+".","走"+ZH[n-1]+"个出口。"],["Tome la "+ORD[n-1]+" salida, por favor.","请从"+ZH[n-1]+"个出口出去。"]];
-const L={left:"左转",right:"右转",straight:"直行",stop:"靠右停车",e1:"第1出口",e2:"第2出口",e3:"第3出口",e4:"第4出口"};
+const T={"left": [["Ahora vamos a girar a la izquierda.", "现在我们向左转。"], ["Cuando puedas a la izquierda.", "你可以的时候，往左。"], ["Hacia la izquierda.", "向左。"], ["Gira a la izquierda.", "左转。"], ["Giraremos a la izquierda en la siguiente.", "下一个路口我们左转。"], ["En la siguiente intersección nos vamos a ir hacia la izquierda.", "在下一个路口，我们往左走。"]], "right": [["Cuando puedas a la derecha.", "你可以的时候，往右。"], ["Vamos a la derecha cuando puedas.", "可以的时候我们往右走。"], ["La siguiente que puedas vamos a la derecha.", "下一个能转的路口，我们往右。"], ["Giro a la derecha.", "右转。"], ["La siguiente intersección a la derecha.", "下一个路口右转。"], ["A la derecha cuando sea posible.", "可能的时候往右。"], ["Vamos a girar a la derecha, la siguiente intersección.", "我们在下一个路口右转。"], ["Recuerda, a la derecha.", "记住，往右。"], ["A la derecha.", "往右。"]], "straight": [["Vamos a seguir en línea recta.", "我们继续直行。"], ["Si yo no te digo nada, vas a continuar siempre de frente.", "如果我没说话，你就一直往前开。"], ["De frente.", "直行。"]], "stop": [["Cuando puedas vamos a buscar un sitio para estacionar utilizando la marcha atrás.", "可以的时候，我们找个地方倒车入位停车。"], ["En este hueco, utilizando la marcha atrás.", "就在这个空位，倒车入位。"], ["De esta vía buscará un lugar para estacionar utilizando la marcha atrás.", "在这条路上找个位置，倒车入位停车。"]]};
+const RBT={"1": [["En la rotonda que se aproxima vamos a hacer primera salida.", "在前面的环岛，我们走第一个出口。"], ["Primera salida.", "第一个出口。"], ["En la rotonda la primera salida.", "在环岛，第一个出口。"], ["Haremos la primera salida en la rotonda que se aproxima.", "在前面的环岛我们走第一个出口。"], ["En la siguiente rotonda haremos la primera salida posible.", "在下一个环岛，走第一个可行的出口。"]], "2": [["Vamos a hacer la segunda salida.", "我们走第二个出口。"], ["Vamos a ir de frente en esta rotonda.", "在这个环岛我们直行（第二个出口）。"], ["De frente.", "直行（第二个出口）。"]], "3": [["Cogemos la tercera salida.", "我们走第三个出口。"], ["Tercera salida.", "第三个出口。"], ["En la siguiente intersección, tercera salida.", "在下一个路口，第三个出口。"], ["Ahora cogemos la tercera salida nuevamente.", "现在我们再次走第三个出口。"]], "4": [["En la rotonda, tome la cuarta salida.", "在环岛，从第4个出口驶出。"], ["Cuarta salida.", "第4个出口。"]]};
+const rbT=n=>RBT[n];
+const L={left:"左转",right:"右转",straight:"直行",stop:"停车（倒车入库）",e1:"第1出口",e2:"第2出口",e3:"第3出口",e4:"第4出口"};
 const SP=[["Lento",.7],["Normal",.92],["Rápido",1.12]];
 const cv=document.getElementById("c"),g=cv.getContext("2d"),$=i=>document.getElementById(i),css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const rnd=a=>a[Math.floor(Math.random()*a.length)];
