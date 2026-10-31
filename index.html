@@ -9,36 +9,38 @@
  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d0f12;--tx:#eef0f2;--mut:#9aa3ad;--ground:#1d2227;--block:#272e35;--road:#434a54;--isl:#3d6a45;--tick:#2e353d}}
 :root[data-theme="dark"]{--bg:#0d0f12;--tx:#eef0f2;--mut:#9aa3ad;--ground:#1d2227;--block:#272e35;--road:#434a54;--isl:#3d6a45;--tick:#2e353d}
-*{box-sizing:border-box}html,body{margin:0}
-body{background:var(--bg);color:var(--tx);font-family:Barlow,-apple-system,"PingFang SC",Helvetica,Arial,sans-serif;max-width:480px;margin:0 auto;padding:12px 12px 20px}
-.bar{display:flex;justify-content:space-between;align-items:baseline;padding:2px 4px 8px}
-.brand{font:700 22px/1 "Barlow Condensed",Arial Narrow,sans-serif;letter-spacing:.2px}
-.brand small{display:block;font:400 12px Barlow,sans-serif;color:var(--mut);margin-top:3px;letter-spacing:0}
-.score{font:600 14px Barlow,sans-serif;color:var(--mut)}.score b{font:700 22px "Barlow Condensed",sans-serif;color:var(--tx)}
-.ticks{display:flex;gap:4px;padding:0 4px 10px}.ticks i{flex:1;height:5px;border-radius:3px;background:var(--tick)}
+*{box-sizing:border-box}html,body{margin:0}html{background:var(--bg)}
+body{background:var(--bg);color:var(--tx);font-family:Barlow,-apple-system,"PingFang SC",Helvetica,Arial,sans-serif;max-width:480px;margin:0 auto;padding:8px 12px;
+ height:100vh;height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:6px;overflow:hidden}
+.bar{display:flex;justify-content:space-between;align-items:center;padding:0 4px;flex:none}
+.brand{font:700 20px/1 "Barlow Condensed",Arial Narrow,sans-serif;letter-spacing:.2px}
+.brand small{display:block;font:400 11px Barlow,sans-serif;color:var(--mut);margin-top:2px;letter-spacing:0}
+@media (max-height:700px){.brand small{display:none}}
+.score{font:600 13px Barlow,sans-serif;color:var(--mut)}.score b{font:700 20px "Barlow Condensed",sans-serif;color:var(--tx)}
+.ticks{display:flex;gap:4px;padding:0 4px;flex:none}.ticks i{flex:1;height:5px;border-radius:3px;background:var(--tick)}
 .ticks i.ok{background:var(--ok)}.ticks i.bad{background:var(--bad)}.ticks i.cur{background:var(--tx)}
-.map{border-radius:20px;overflow:hidden;background:var(--ground);box-shadow:0 0 0 1px rgba(0,0,0,.08)}
-canvas#c{width:100%;aspect-ratio:1;display:block}
-.led{position:relative;margin-top:10px;padding:16px 16px 14px;border-radius:14px;background:#0c0d0f;border:2px solid #2b2d33;color:#ffb000;
- background-image:radial-gradient(rgba(255,176,0,.10) 1px,transparent 1.4px);background-size:5px 5px;min-height:128px}
-.tag{display:inline-block;background:#0f4c9a;color:#fff;font:600 12px Barlow,sans-serif;padding:3px 9px;border-radius:5px;margin-bottom:8px;border:1px solid #fff}
-.es{font:600 26px/1.15 "Barlow Condensed","Arial Narrow",sans-serif;text-transform:uppercase;letter-spacing:.6px;text-shadow:0 0 8px rgba(255,176,0,.55)}
-.zh{font:400 14px/1.45 Barlow,"PingFang SC",sans-serif;color:#b9ad90;margin-top:8px}
-.msg{min-height:20px;margin-top:6px;font:600 15px Barlow,"PingFang SC",sans-serif}
-.err{margin-top:8px;color:#e6dfcc;font-size:14px;line-height:1.4}.err span{color:#a99f86}
-.dash{margin-top:10px;padding:16px 14px 14px;border-radius:22px;background:#17191d;border:1px solid #272a30}
-#cr{display:flex;align-items:center;justify-content:center;gap:22px;min-height:172px}
-#c1{display:none}#c3{display:none;grid-template-columns:1fr 1fr;gap:8px;width:172px}
-#wheel{width:172px;height:172px;touch-action:none;display:block}
-button{font:600 17px Barlow,sans-serif;border:0;color:#fff;cursor:pointer}
-#c3 button{background:#262a31;border-radius:12px;padding:20px 0;font:700 24px "Barlow Condensed",sans-serif}
+.map{flex:1 1 0;min-height:0;display:flex;justify-content:center}
+.map canvas{height:100%;max-width:100%;aspect-ratio:1;object-fit:contain;display:block;border-radius:18px;box-shadow:0 0 0 1px rgba(0,0,0,.08)}
+.led{flex:none;height:clamp(112px,19dvh,150px);overflow-y:auto;position:relative;padding:9px 12px 7px;border-radius:12px;background:#0c0d0f;border:2px solid #2b2d33;color:#ffb000;
+ background-image:radial-gradient(rgba(255,176,0,.10) 1px,transparent 1.4px);background-size:5px 5px}
+.tag{display:inline-block;background:#0f4c9a;color:#fff;font:600 11px Barlow,sans-serif;padding:2px 8px;border-radius:5px;margin-bottom:5px;border:1px solid #fff}
+.es{font:600 22px/1.12 "Barlow Condensed","Arial Narrow",sans-serif;text-transform:uppercase;letter-spacing:.5px;text-shadow:0 0 8px rgba(255,176,0,.55)}
+.zh{font:400 13px/1.4 Barlow,"PingFang SC",sans-serif;color:#b9ad90;margin-top:5px}
+.msg{min-height:18px;margin-top:3px;font:600 14px Barlow,"PingFang SC",sans-serif}
+.err{margin-top:6px;color:#e6dfcc;font-size:13px;line-height:1.35}.err span{color:#a99f86}
+.dash{flex:none;padding:10px 12px 10px;border-radius:18px;background:#17191d;border:1px solid #272a30}
+#cr{display:flex;align-items:center;justify-content:center;gap:20px;height:clamp(104px,17dvh,132px)}
+#c1{display:none}#c3{display:none;grid-template-columns:1fr 1fr;gap:6px;width:150px}
+#wheel{height:clamp(100px,16dvh,128px);width:clamp(100px,16dvh,128px);touch-action:none;display:block}
+button{font:600 16px Barlow,sans-serif;border:0;color:#fff;cursor:pointer}
+#c3 button{background:#262a31;border-radius:10px;padding:12px 0;font:700 22px "Barlow Condensed",sans-serif}
 #c3 button:active{background:#ffb000;color:#111}
-#stopb{flex:none;width:96px;height:96px;border-radius:50%;background:#d1131f;font:700 20px "Barlow Condensed",sans-serif;letter-spacing:1px;box-shadow:0 0 0 5px #17191d,0 0 0 8px #5a1015,0 6px 14px rgba(0,0,0,.45)}
+#stopb{flex:none;width:clamp(70px,11dvh,88px);height:clamp(70px,11dvh,88px);border-radius:50%;background:#d1131f;font:700 18px "Barlow Condensed",sans-serif;letter-spacing:1px;box-shadow:0 0 0 4px #17191d,0 0 0 6px #5a1015,0 5px 12px rgba(0,0,0,.45)}
 #stopb:active{transform:scale(.95)}
-.pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;justify-content:center}
-.pills button{background:#23262c;color:#d7dbe0;font:600 13px Barlow,"PingFang SC",sans-serif;padding:8px 12px;border-radius:999px}
+.pills{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;justify-content:center}
+.pills button{background:#23262c;color:#d7dbe0;font:600 12px Barlow,"PingFang SC",sans-serif;padding:6px 10px;border-radius:999px}
 .pills button.off{color:#7d848d;text-decoration:line-through}
-#rev{display:none;width:100%;margin-top:12px;padding:12px;border-radius:12px;background:#0f4c9a;font-size:16px}
+#rev{display:none;width:100%;margin-top:8px;padding:9px;border-radius:10px;background:#0f4c9a;font-size:15px}
 button:focus-visible{outline:3px solid #ffb000;outline-offset:2px}
 </style></head><body>
 <header class="bar"><div class="brand">Examen de conducir<small>Entrenamiento de instrucciones</small></div><div class="score"><b id="f">0</b> aciertos</div></header>
@@ -49,7 +51,7 @@ button:focus-visible{outline:3px solid #ffb000;outline-offset:2px}
 <section class="dash">
 <div id="cr"><div id="c1"><canvas id="wheel" width="360" height="360"></canvas></div>
 <div id="c3"><button data-a="e1">1ª</button><button data-a="e2">2ª</button><button data-a="e3">3ª</button><button data-a="e4">4ª</button></div>
-<button data-a="stop" id="stopb" aria-label="Empezar / Parar" style="font-size:15px;letter-spacing:0">EMPEZAR</button></div>
+<button data-a="stop" id="stopb" aria-label="Empezar / Parar" style="font-size:12px;letter-spacing:0">EMPEZAR</button></div>
 <div class="pills"><button id="rep">Repetir</button><button id="spd">Normal</button><button id="txt">Texto</button><button id="tr">中文</button><button id="voz">Voz</button></div>
 <button id="rev">Repasar errores</button></section>
 <script>
@@ -102,7 +104,7 @@ function updTxt(){$("rep").textContent="Repetir · "+reps;$("spd").textContent=S
  const v=voices[vi];$("voz").textContent="Voz: "+(v?v.name.replace(/^(Microsoft|Google)\s+/i,"").split(/[\s-]/)[0]:"auto")}
 function show(){const s=esOn||revealed;$("es").textContent=s?cur.v[0]:"Escucha…";{const tr=hm==0?cur.v[1]:hm==1?cur.v[2]:"",ex=cur.k[0]=="e"?(hm==0?"（出口从右手边起数：1=右，2=直，3=左，4=掉头，绕一圈从入口出去）":hm==1?" (Count exits from your right: 1=right, 2=straight, 3=left, 4=U-turn, all the way round)":""):"";$("zh").textContent=s&&hm<2?tr+ex:""}}
 function start(list){q=0;right_=0;errs=[];res=[];queue=list||null;$("rev").style.display="none";$("f").textContent="0";
- $("stopb").textContent="STOP";$("stopb").style.fontSize="20px";$("stopb").style.letterSpacing="1px";
+ $("stopb").textContent="STOP";$("stopb").style.fontSize="17px";$("stopb").style.letterSpacing="1px";
  x=0;y=2;h=1;draw(...P(x,y),ang(h));next()}
 function next(){const total=queue?queue.length:TOTAL;if(q>=total)return end();
  cur=queue?{k:queue[q].k,v:queue[q].v}:pickQ();if(queue){place(cur.k);draw(...P(x,y),ang(h))}
@@ -118,7 +120,7 @@ function answer(a){if(busy||!cur)return;busy=true;const ok=a==cur.k;revealed=tru
  const nx=x+dx[nh],ny=y+dy[nh],[a0,b0]=P(x,y),[a1,b1]=P(nx,ny);let t=0;
  (function f(){t+=.04;const e=Math.min(t,1);draw(a0+(a1-a0)*e,b0+(b1-b0)*e,ang(nh),ok?null:"#7a0b12");
   if(e<1)requestAnimationFrame(f);else{x=nx;y=ny;h=nh;setTimeout(next,ok?800:1500)}})()}
-function end(){$("c1").style.display="none";$("c3").style.display="none";$("stopb").textContent="EMPEZAR";$("stopb").style.fontSize="15px";$("stopb").style.letterSpacing="0";
+function end(){$("c1").style.display="none";$("c3").style.display="none";$("stopb").textContent="EMPEZAR";$("stopb").style.fontSize="12px";$("stopb").style.letterSpacing="0";
  const total=queue?queue.length:TOTAL;cur=null;ticks(total);$("h").style.display="none";
  $("es").textContent="Resultado "+right_+" / "+total;
  $("zh").innerHTML=(errs.length?(hm==1?"Mistakes ("+errs.length+")":"错题（"+errs.length+"）"):(hm==1?"All correct":"全部答对"))+errs.map(e=>"<div class='err'>"+e.v[0]+"<br><span>"+(hm==1?e.v[2]+" → "+LE[e.k]:e.v[1]+" → "+L[e.k])+"</span></div>").join("");
