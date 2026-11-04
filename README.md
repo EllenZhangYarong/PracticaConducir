@@ -7,4 +7,4 @@ Esta página utiliza GoatCounter para obtener estadísticas de acceso anónimas,
 
 This page uses GoatCounter for anonymous access statistics, does not use cookies, and does not record personal identities.
 
-Copyright © 2026-2027 Yarong Zhang. All rights reserved.
+Copyright © 2026-2027 Ellen Yarong Zhang. All rights reserved.
